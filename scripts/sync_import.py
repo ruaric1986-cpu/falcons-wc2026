@@ -31,7 +31,7 @@ def import_results(xlsx_path, data_dir):
             sheets[key].cell(row, 7).value = res["away"]
             written += 1
     for num, fx in fixtures.items():
-        if fx["stage"] == "GROUP" or fx["home"] in ("", "TBD"):
+        if fx["stage"] == "GROUP" or fx["home"] in ("", "TBD") or fx["away"] in ("", "TBD"):
             continue
         row = rows["KO"].get(num)
         if row:
