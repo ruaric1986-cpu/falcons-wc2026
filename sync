@@ -1,0 +1,11 @@
+#!/bin/zsh
+# Push latest predictions to GitHub and pull results back into the spreadsheet.
+set -e
+cd "$(dirname "$0")"
+git pull --rebase
+.venv/bin/python -m scripts.sync import
+.venv/bin/python -m scripts.sync export
+.venv/bin/python -m scripts.build_leaderboard
+git add data && (git diff --cached --quiet || git commit -m "data: prediction sync")
+git push
+echo "✅ Synced."
