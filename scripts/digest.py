@@ -57,6 +57,8 @@ def main():
         return
     from scripts.send_whatsapp import send
     send(msg)
+    if os.environ.get("DRY_RUN"):
+        return  # don't advance reported-state on a dry run, or the real send would skip these
     with open(os.path.join(DATA, "digest_state.json"), "w") as fh:
         json.dump({"reported": sorted(set(state["reported"]) | set(results))}, fh, indent=1)
 

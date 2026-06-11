@@ -1,4 +1,5 @@
-import json
+import json, os
+import scripts.digest as digest
 from scripts.digest import compose
 
 FIXTURES = [
@@ -26,3 +27,15 @@ def test_compose_skips_when_nothing_to_say():
                   points={"1": {}}, leaderboard=LB,
                   reported=["1"], today="2026-07-01")  # result already reported, no games today
     assert msg is None
+
+def test_dry_run_does_not_advance_reported_state(tmp_path, monkeypatch):
+    monkeypatch.setattr(digest, "DATA", str(tmp_path))
+    monkeypatch.setenv("DRY_RUN", "1")
+    (tmp_path / "fixtures.json").write_text(json.dumps(FIXTURES))
+    (tmp_path / "results.json").write_text(json.dumps({"1": {"home": 2, "away": 1}}))
+    (tmp_path / "points.json").write_text(json.dumps({"1": {"Ruari": 3}}))
+    (tmp_path / "leaderboard.json").write_text(json.dumps(LB))
+    (tmp_path / "digest_state.json").write_text(json.dumps({"reported": []}))
+    digest.main()
+    # state must be untouched so the real send still reports these results
+    assert json.loads((tmp_path / "digest_state.json").read_text()) == {"reported": []}
