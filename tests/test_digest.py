@@ -21,6 +21,7 @@ def test_compose_full_digest():
     assert "⬆2" in msg                                # movement
     assert "Czechia v South Korea" in msg             # today's fixture
     assert "17:00" in msg                             # 16:00 UTC -> 17:00 UK (BST)
+    assert digest.SITE_URL in msg                     # link to the table on the site
 
 def test_compose_skips_when_nothing_to_say():
     msg = compose(fixtures=FIXTURES, results={"1": {"home": 2, "away": 1}},
