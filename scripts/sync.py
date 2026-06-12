@@ -8,7 +8,7 @@ import openpyxl
 from scripts.score import parse_score
 
 XLSX = os.environ.get("WC_XLSX",
-    "/Users/rcairns/Library/CloudStorage/OneDrive-OpenEnergyMarketLimited/World Cup Predictions/Falcons WC2026 Predictor.xlsx")
+    "/Users/rcairns/Library/CloudStorage/OneDrive-OpenEnergyMarketLimited/RAC/Falcons WC2026 Predictor.xlsx")
 DATA = os.path.join(os.path.dirname(__file__), "..", "data")
 HEADER_ROW = 3
 
@@ -72,8 +72,10 @@ def export(xlsx_path, out_dir):
     wb = openpyxl.load_workbook(xlsx_path, data_only=True, read_only=True)
     players, fixtures, predictions = read_sheet(wb["Group Stage"], True)
     p2, ko_fixtures, ko_preds = read_sheet(wb["Knockouts"], False)
-    if p2 != players:
-        sys.exit(f"ERROR: player columns differ between sheets:\n  Group Stage: {players}\n  Knockouts:   {p2}")
+    if set(p2) != set(players):
+        sys.exit("ERROR: player sets differ between sheets (someone added/renamed a player in only one sheet):\n"
+                 f"  only in Group Stage: {sorted(set(players) - set(p2))}\n"
+                 f"  only in Knockouts:   {sorted(set(p2) - set(players))}")
     fixtures += ko_fixtures
     predictions.update(ko_preds)
     _merge_api_ids(out_dir, fixtures)

@@ -7,20 +7,20 @@
   "group_pts": 4,
   "knockout_pts": 0,
   "rank": 1,
-  "movement": 4
+  "movement": 0
  },
  {
-  "player": "Seif",
+  "player": "Jose",
   "total": 4,
   "exact": 1,
   "result": 1,
   "group_pts": 4,
   "knockout_pts": 0,
   "rank": 2,
-  "movement": 15
+  "movement": 3
  },
  {
-  "player": "Chas",
+  "player": "Gazza",
   "total": 3,
   "exact": 1,
   "result": 0,
@@ -30,34 +30,34 @@
   "movement": 1
  },
  {
-  "player": "Gazza",
+  "player": "Graham",
   "total": 3,
   "exact": 1,
   "result": 0,
   "group_pts": 3,
   "knockout_pts": 0,
   "rank": 4,
-  "movement": 2
+  "movement": 8
  },
  {
-  "player": "Jose",
+  "player": "Jim",
   "total": 3,
   "exact": 1,
   "result": 0,
   "group_pts": 3,
   "knockout_pts": 0,
   "rank": 5,
-  "movement": 4
+  "movement": 8
  },
  {
-  "player": "Karim",
+  "player": "Seif",
   "total": 3,
   "exact": 1,
   "result": 0,
   "group_pts": 3,
   "knockout_pts": 0,
   "rank": 6,
-  "movement": 4
+  "movement": -4
  },
  {
   "player": "Carter",
@@ -67,17 +67,17 @@
   "group_pts": 2,
   "knockout_pts": 0,
   "rank": 7,
-  "movement": -4
+  "movement": 0
  },
  {
-  "player": "Paddy",
+  "player": "Daisy",
   "total": 2,
   "exact": 0,
   "result": 2,
   "group_pts": 2,
   "knockout_pts": 0,
   "rank": 8,
-  "movement": 3
+  "movement": 0
  },
  {
   "player": "Ruari",
@@ -87,7 +87,7 @@
   "group_pts": 2,
   "knockout_pts": 0,
   "rank": 9,
-  "movement": 3
+  "movement": 0
  },
  {
   "player": "Alex F",
@@ -97,7 +97,7 @@
   "group_pts": 1,
   "knockout_pts": 0,
   "rank": 10,
-  "movement": -9
+  "movement": 0
  },
  {
   "player": "Ben F",
@@ -107,40 +107,40 @@
   "group_pts": 1,
   "knockout_pts": 0,
   "rank": 11,
-  "movement": -9
+  "movement": 0
  },
  {
-  "player": "Graham",
+  "player": "Chas",
   "total": 1,
   "exact": 0,
   "result": 1,
   "group_pts": 1,
   "knockout_pts": 0,
   "rank": 12,
-  "movement": -5
+  "movement": -9
  },
  {
-  "player": "Jim",
+  "player": "Karim",
   "total": 1,
   "exact": 0,
   "result": 1,
   "group_pts": 1,
   "knockout_pts": 0,
   "rank": 13,
-  "movement": -5
+  "movement": -7
  },
  {
-  "player": "Ryan",
+  "player": "Paddy",
   "total": 1,
   "exact": 0,
   "result": 1,
   "group_pts": 1,
   "knockout_pts": 0,
   "rank": 14,
-  "movement": -1
+  "movement": -6
  },
  {
-  "player": "Sam H",
+  "player": "Ryan",
   "total": 1,
   "exact": 0,
   "result": 1,
@@ -150,7 +150,7 @@
   "movement": -1
  },
  {
-  "player": "Samuel",
+  "player": "Sam H",
   "total": 1,
   "exact": 0,
   "result": 1,
@@ -160,13 +160,23 @@
   "movement": -1
  },
  {
-  "player": "Santino",
+  "player": "Samuel",
   "total": 1,
   "exact": 0,
   "result": 1,
   "group_pts": 1,
   "knockout_pts": 0,
   "rank": 17,
+  "movement": -1
+ },
+ {
+  "player": "Santino",
+  "total": 1,
+  "exact": 0,
+  "result": 1,
+  "group_pts": 1,
+  "knockout_pts": 0,
+  "rank": 18,
   "movement": -1
  }
 ]
