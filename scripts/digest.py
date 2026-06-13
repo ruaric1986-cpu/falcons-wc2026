@@ -3,6 +3,7 @@ from zoneinfo import ZoneInfo
 
 DATA = os.path.join(os.path.dirname(__file__), "..", "data")
 UK = ZoneInfo("Europe/London")
+SITE_URL = "https://ruaric1986-cpu.github.io/falcons-wc2026/"
 
 def _uk(dt_str):
     return datetime.datetime.fromisoformat(dt_str.replace("Z", "+00:00")).astimezone(UK)
@@ -38,6 +39,7 @@ def compose(fixtures, results, points, leaderboard, reported, today):
         lines.append("*Today:*")
         for f in todays:
             lines.append(f"{_uk(f['kickoff']).strftime('%H:%M')} {f['home']} v {f['away']}")
+    lines += ["", f"📊 Full table: {SITE_URL}"]
     return "\n".join(lines).strip()
 
 def main():
