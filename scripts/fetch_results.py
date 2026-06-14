@@ -38,7 +38,8 @@ def _ninety_minute_score(m):
         return {"home": None, "away": None}
     return {"home": rt["home"], "away": rt["away"]}
 
-def map_and_extract(api_matches, fixtures):
+def map_and_extract(api_matches, fixtures, prior=None):
+    prior = prior or {}
     by_api_id = {f["api_id"]: f for f in fixtures if f.get("api_id")}
     group_fx = [f for f in fixtures if f["stage"] == "GROUP" and not f.get("api_id")]
     unmatched = []
@@ -85,7 +86,13 @@ def map_and_extract(api_matches, fixtures):
         if m["status"] == "FINISHED":
             score = _ninety_minute_score(m)
             if score["home"] is None or score["away"] is None:
-                print(f"match {fx['number']}: FINISHED but score not yet available — skipping")
+                kept = prior.get(str(fx["number"]))
+                if kept:
+                    print(f"match {fx['number']}: FINISHED but score not yet available "
+                          f"— retaining previously stored {kept['home']}-{kept['away']}")
+                    results[str(fx["number"])] = kept
+                else:
+                    print(f"match {fx['number']}: FINISHED but score not yet available — skipping")
                 continue
             if m["stage"] == "GROUP_STAGE" and norm(fx["home"]) != norm(m["homeTeam"]["name"]):
                 score = {"home": score["away"], "away": score["home"]}
@@ -116,12 +123,17 @@ def main():
         sys.exit(f"Partial API response: got {len(api_matches)} of {expected} matches")
     with open(os.path.join(DATA, "fixtures.json")) as fh:
         fixtures = json.load(fh)
-    results, unmatched = map_and_extract(api_matches, fixtures)
+    results_path = os.path.join(DATA, "results.json")
+    prior = {}
+    if os.path.exists(results_path):
+        with open(results_path) as fh:
+            prior = json.load(fh)
+    results, unmatched = map_and_extract(api_matches, fixtures, prior)
     if unmatched:
         sys.exit("UNMATCHED API MATCHES (add to ALIASES): " + "; ".join(unmatched))
     with open(os.path.join(DATA, "fixtures.json"), "w") as fh:
         json.dump(fixtures, fh, indent=1)
-    with open(os.path.join(DATA, "results.json"), "w") as fh:
+    with open(results_path, "w") as fh:
         json.dump(results, fh, indent=1)
     print(f"{len(results)} finished matches")
 

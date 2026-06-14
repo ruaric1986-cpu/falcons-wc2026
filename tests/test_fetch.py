@@ -87,3 +87,15 @@ def test_finished_match_with_null_score_skipped():
             "score": {"winner": None, "duration": "REGULAR", "fullTime": {"home": None, "away": None}}}]
     results, unmatched = map_and_extract(api, fixtures)
     assert results == {} and unmatched == []
+
+
+def test_finished_match_with_null_score_retains_prior():
+    # API transiently drops the 90-min score for a match we already scored —
+    # keep the previously stored result instead of losing it.
+    fixtures = [{"number": 1, "stage": "GROUP", "group": "A", "kickoff": "2026-06-11",
+                 "home": "Mexico", "away": "South Africa", "api_id": None}]
+    api = [{"id": 9001, "stage": "GROUP_STAGE", "group": "Group A", "utcDate": "2026-06-11T19:00:00Z",
+            "status": "FINISHED", "homeTeam": {"name": "Mexico"}, "awayTeam": {"name": "South Africa"},
+            "score": {"winner": None, "duration": "REGULAR", "fullTime": {"home": None, "away": None}}}]
+    results, unmatched = map_and_extract(api, fixtures, prior={"1": {"home": 2, "away": 0}})
+    assert results == {"1": {"home": 2, "away": 0}} and unmatched == []
