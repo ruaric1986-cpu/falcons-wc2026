@@ -1,5 +1,10 @@
 """Fetch World Cup matches from football-data.org and update data/results.json + fixtures.json.
 Env: FOOTBALL_DATA_TOKEN (required when run as a script).
+
+results.json is the source of truth for matches already recorded: once a result is
+stored it is treated as hardcoded/historic and is never overwritten by a later API
+response. The API only contributes results for matches not yet recorded (the most
+recent games). To correct a stored result, edit data/results.json by hand.
 """
 import json, os, re, sys, time
 import unicodedata
@@ -38,8 +43,7 @@ def _ninety_minute_score(m):
         return {"home": None, "away": None}
     return {"home": rt["home"], "away": rt["away"]}
 
-def map_and_extract(api_matches, fixtures, prior=None):
-    prior = prior or {}
+def map_and_extract(api_matches, fixtures):
     by_api_id = {f["api_id"]: f for f in fixtures if f.get("api_id")}
     group_fx = [f for f in fixtures if f["stage"] == "GROUP" and not f.get("api_id")]
     unmatched = []
@@ -86,18 +90,23 @@ def map_and_extract(api_matches, fixtures, prior=None):
         if m["status"] == "FINISHED":
             score = _ninety_minute_score(m)
             if score["home"] is None or score["away"] is None:
-                kept = prior.get(str(fx["number"]))
-                if kept:
-                    print(f"match {fx['number']}: FINISHED but score not yet available "
-                          f"— retaining previously stored {kept['home']}-{kept['away']}")
-                    results[str(fx["number"])] = kept
-                else:
-                    print(f"match {fx['number']}: FINISHED but score not yet available — skipping")
+                print(f"match {fx['number']}: FINISHED but score not yet available — skipping")
                 continue
             if m["stage"] == "GROUP_STAGE" and norm(fx["home"]) != norm(m["homeTeam"]["name"]):
                 score = {"home": score["away"], "away": score["home"]}
             results[str(fx["number"])] = score
     return results, unmatched
+
+
+def merge_frozen(api_results, locked):
+    """Combine freshly-fetched API results with already-recorded ones.
+
+    `locked` (the existing contents of results.json) is authoritative: any match
+    already recorded keeps its stored score and is never overwritten by the API.
+    The API only fills in matches not yet present. Result is sorted by match number.
+    """
+    merged = {**api_results, **locked}
+    return {k: merged[k] for k in sorted(merged, key=int)}
 
 def main():
     import requests
@@ -124,18 +133,21 @@ def main():
     with open(os.path.join(DATA, "fixtures.json")) as fh:
         fixtures = json.load(fh)
     results_path = os.path.join(DATA, "results.json")
-    prior = {}
+    locked = {}
     if os.path.exists(results_path):
         with open(results_path) as fh:
-            prior = json.load(fh)
-    results, unmatched = map_and_extract(api_matches, fixtures, prior)
+            locked = json.load(fh)
+    api_results, unmatched = map_and_extract(api_matches, fixtures)
     if unmatched:
         sys.exit("UNMATCHED API MATCHES (add to ALIASES): " + "; ".join(unmatched))
+    results = merge_frozen(api_results, locked)
+    new = sorted(set(results) - set(locked), key=int)
     with open(os.path.join(DATA, "fixtures.json"), "w") as fh:
         json.dump(fixtures, fh, indent=1)
     with open(results_path, "w") as fh:
         json.dump(results, fh, indent=1)
-    print(f"{len(results)} finished matches")
+    print(f"{len(results)} results held ({len(locked)} historic from results.json, "
+          f"{len(new)} new from API: {new or 'none'})")
 
 if __name__ == "__main__":
     main()
