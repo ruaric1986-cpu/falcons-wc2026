@@ -1,0 +1,23 @@
+name: One-off notify
+on:
+  workflow_dispatch:
+    inputs:
+      message:
+        description: "Message to send to the WhatsApp group"
+        required: true
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -q requests
+      - name: Send message
+        env:
+          GREENAPI_ID_INSTANCE: ${{ secrets.GREENAPI_ID_INSTANCE }}
+          GREENAPI_TOKEN: ${{ secrets.GREENAPI_TOKEN }}
+          WHATSAPP_GROUP_ID: ${{ secrets.WHATSAPP_GROUP_ID }}
+          MSG: ${{ inputs.message }}
+        run: python -c "import os; from scripts.send_whatsapp import send; send(os.environ['MSG'])"
