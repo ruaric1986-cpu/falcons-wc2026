@@ -1,6 +1,10 @@
 """Local-only bridge between the OneDrive spreadsheet and the repo data files.
+
+NOTE: data/*.json in this repo is the single source of truth. The spreadsheet is
+a non-authoritative backup, so `export` (sheet -> repo) will OVERWRITE the
+canonical data and should only be run deliberately when the sheet is more current.
 Usage:
-  python -m scripts.sync export   # xlsx -> data/{fixtures,predictions,players}.json
+  python -m scripts.sync export   # xlsx -> data/{fixtures,predictions,players}.json (overwrites canonical data!)
   python -m scripts.sync import   # data/{results,fixtures}.json -> xlsx (Task 10)
 """
 import json, sys, os, datetime
@@ -69,6 +73,7 @@ def _merge_api_ids(out_dir, fixtures):
                 f["api_id"] = old[f["number"]].get("api_id")
 
 def export(xlsx_path, out_dir):
+    print("WARNING: data/*.json is the source of truth — this overwrites it from the spreadsheet.")
     wb = openpyxl.load_workbook(xlsx_path, data_only=True, read_only=True)
     players, fixtures, predictions = read_sheet(wb["Group Stage"], True)
     p2, ko_fixtures, ko_preds = read_sheet(wb["Knockouts"], False)

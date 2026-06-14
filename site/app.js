@@ -57,9 +57,37 @@ function renderKnockouts() {
   return fx.map(matchCard).join("") || "<p class='loading'>Knockout draw not made yet</p>";
 }
 
+function renderResults() {
+  const played = state.fixtures
+    .filter((f) => state.results[String(f.number)])
+    .sort((a, b) => String(b.kickoff || "").localeCompare(String(a.kickoff || "")) || b.number - a.number);
+  if (!played.length) return "<p class='loading'>No results yet</p>";
+  const players = state.players;
+  const head = `<tr><th>Match</th><th>Score</th>${players.map((p) => `<th>${esc(p)}</th>`).join("")}</tr>`;
+  const rows = played.map((f) => {
+    const mid = String(f.number);
+    const res = state.results[mid];
+    const pts = state.points[mid] || {};
+    const cells = players.map((p) => {
+      const v = (state.predictions[mid] || {})[p];
+      if (!v) return `<td>—</td>`;
+      const pt = pts[p] ?? 0;
+      return `<td class="p${pt}" title="${pt} pt${pt === 1 ? "" : "s"}">${esc(v)}</td>`;
+    }).join("");
+    return `<tr><td class="mname">${esc(f.home)} v ${esc(f.away)}</td><td class="score">${res.home}-${res.away}</td>${cells}</tr>`;
+  }).join("");
+  const totals = players.map((p) => {
+    const sum = played.reduce((s, f) => s + ((state.points[String(f.number)] || {})[p] ?? 0), 0);
+    return `<td><strong>${sum}</strong></td>`;
+  }).join("");
+  const totalRow = `<tr class="totals"><td class="mname">Total</td><td></td>${totals}</tr>`;
+  const legend = `<p class="legend"><span class="pred p3">exact 3</span><span class="pred p1">result 1</span><span class="pred p0">miss 0</span></p>`;
+  return `<div class="grid-wrap"><table class="grid">${head}${rows}${totalRow}</table></div>${legend}`;
+}
+
 function render(tab) {
   document.querySelectorAll("nav button").forEach((b) => b.classList.toggle("active", b.dataset.tab === tab));
-  $("#content").innerHTML = { leaderboard: renderLeaderboard, matches: renderMatches, knockouts: renderKnockouts }[tab]();
+  $("#content").innerHTML = { leaderboard: renderLeaderboard, matches: renderMatches, results: renderResults, knockouts: renderKnockouts }[tab]();
 }
 
 document.querySelector("nav").addEventListener("click", (e) => e.target.dataset.tab && render(e.target.dataset.tab));
