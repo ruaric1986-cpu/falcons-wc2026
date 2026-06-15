@@ -7,7 +7,7 @@
   "group_pts": 12,
   "knockout_pts": 0,
   "rank": 1,
-  "movement": 1
+  "movement": 0
  },
  {
   "player": "Jose",
@@ -17,7 +17,7 @@
   "group_pts": 12,
   "knockout_pts": 0,
   "rank": 2,
-  "movement": 3
+  "movement": 0
  },
  {
   "player": "Jim",
@@ -27,7 +27,7 @@
   "group_pts": 9,
   "knockout_pts": 0,
   "rank": 3,
-  "movement": -2
+  "movement": 0
  },
  {
   "player": "Dave F",
@@ -47,7 +47,7 @@
   "group_pts": 9,
   "knockout_pts": 0,
   "rank": 5,
-  "movement": 9
+  "movement": 0
  },
  {
   "player": "Ryan",
@@ -57,7 +57,7 @@
   "group_pts": 8,
   "knockout_pts": 0,
   "rank": 6,
-  "movement": 5
+  "movement": 0
  },
  {
   "player": "Samuel",
@@ -67,7 +67,7 @@
   "group_pts": 8,
   "knockout_pts": 0,
   "rank": 7,
-  "movement": 5
+  "movement": 0
  },
  {
   "player": "Alex F",
@@ -77,7 +77,7 @@
   "group_pts": 8,
   "knockout_pts": 0,
   "rank": 8,
-  "movement": -5
+  "movement": 0
  },
  {
   "player": "Ruari",
@@ -87,7 +87,7 @@
   "group_pts": 8,
   "knockout_pts": 0,
   "rank": 9,
-  "movement": -3
+  "movement": 0
  },
  {
   "player": "Chas",
@@ -97,7 +97,7 @@
   "group_pts": 7,
   "knockout_pts": 0,
   "rank": 10,
-  "movement": -3
+  "movement": 0
  },
  {
   "player": "Daisy",
@@ -107,7 +107,7 @@
   "group_pts": 7,
   "knockout_pts": 0,
   "rank": 11,
-  "movement": -3
+  "movement": 0
  },
  {
   "player": "Gazza",
@@ -117,7 +117,7 @@
   "group_pts": 7,
   "knockout_pts": 0,
   "rank": 12,
-  "movement": -3
+  "movement": 0
  },
  {
   "player": "Graham",
@@ -127,7 +127,7 @@
   "group_pts": 7,
   "knockout_pts": 0,
   "rank": 13,
-  "movement": -3
+  "movement": 0
  },
  {
   "player": "Seif",
@@ -137,7 +137,7 @@
   "group_pts": 7,
   "knockout_pts": 0,
   "rank": 14,
-  "movement": -1
+  "movement": 0
  },
  {
   "player": "Ben F",
