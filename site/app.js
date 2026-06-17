@@ -32,10 +32,11 @@ function matchCard(fx) {
   const res = state.results[mid];
   const score = res ? `${res.home}-${res.away}` : kicked(fx) ? "in play / awaiting result" : fx.kickoff && String(fx.kickoff).includes("T") ? ukTime(fx.kickoff) : "TBC";
   let preds = "";
-  if (kicked(fx)) {
+  const mp = state.predictions[mid] || {};
+  if (Object.keys(mp).length) {
     const pts = state.points[mid] || {};
     preds = `<div class="preds">` + state.players.map((p) => {
-      const v = (state.predictions[mid] || {})[p];
+      const v = mp[p];
       if (!v) return `<span class="pred">${esc(p)} —</span>`;
       const cls = res ? ` p${pts[p] ?? 0}` : "";
       return `<span class="pred${cls}">${esc(p)} ${esc(v)}</span>`;
