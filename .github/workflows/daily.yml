@@ -1,7 +1,12 @@
 name: Daily update
 on:
   schedule:
-    - cron: "30 6 * * *"   # 07:30 UK during BST
+    # GitHub frequently runs scheduled jobs late (we've seen 3-4h) or drops them,
+    # so we fire several ticks across the morning instead of one. The `gate` job
+    # lets exactly ONE through per day — the first tick at/after 07:30 UK that
+    # GitHub actually runs — and the rest are quick no-ops. Covers 06:00-10:30 UTC,
+    # which spans 07:30 UK in both BST and GMT.
+    - cron: "*/30 6-10 * * *"
   workflow_dispatch:
     inputs:
       dry_run:
@@ -20,7 +25,39 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      go: ${{ steps.g.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: g
+        env:
+          EVENT: ${{ github.event_name }}
+        run: |
+          python - <<'PY'
+          import os, json, datetime
+          from zoneinfo import ZoneInfo
+          event = os.environ.get("EVENT", "")
+          go = True
+          if event == "schedule":
+              uk = datetime.datetime.now(ZoneInfo("Europe/London"))
+              try:
+                  with open("data/digest_state.json") as fh:
+                      last = json.load(fh).get("last_sent")
+              except FileNotFoundError:
+                  last = None
+              go = uk.time() >= datetime.time(7, 30) and last != uk.date().isoformat()
+              print(f"schedule gate: uk={uk.isoformat()} last_sent={last} -> {'GO' if go else 'skip'}")
+          else:
+              print(f"event={event} -> GO")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as fh:
+              fh.write("go=1\n" if go else "go=\n")
+          PY
+
   update:
+    needs: gate
+    if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -55,8 +92,10 @@ jobs:
           mkdir -p _site && cp site/* _site/ && cp -r data _site/data
       - uses: actions/upload-pages-artifact@v3
         with: { path: _site }
+
   deploy:
-    needs: update
+    needs: [gate, update]
+    if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
     environment:
       name: github-pages

@@ -40,3 +40,21 @@ def test_dry_run_does_not_advance_reported_state(tmp_path, monkeypatch):
     digest.main()
     # state must be untouched so the real send still reports these results
     assert json.loads((tmp_path / "digest_state.json").read_text()) == {"reported": []}
+
+def test_real_send_records_last_sent(tmp_path, monkeypatch):
+    import datetime
+    from zoneinfo import ZoneInfo
+    import scripts.send_whatsapp as sw
+    monkeypatch.setattr(sw, "send", lambda msg: None)        # don't actually POST
+    monkeypatch.setattr(digest, "DATA", str(tmp_path))
+    monkeypatch.delenv("DRY_RUN", raising=False)
+    (tmp_path / "fixtures.json").write_text(json.dumps(FIXTURES))
+    (tmp_path / "results.json").write_text(json.dumps({"1": {"home": 2, "away": 1}}))
+    (tmp_path / "points.json").write_text(json.dumps({"1": {"Ruari": 3}}))
+    (tmp_path / "leaderboard.json").write_text(json.dumps(LB))
+    (tmp_path / "digest_state.json").write_text(json.dumps({"reported": []}))
+    digest.main()
+    state = json.loads((tmp_path / "digest_state.json").read_text())
+    today = datetime.datetime.now(ZoneInfo("Europe/London")).date().isoformat()
+    assert state["reported"] == ["1"]      # result recorded
+    assert state["last_sent"] == today     # morning-send marker the gate uses

@@ -51,18 +51,20 @@ def main():
             return json.load(fh)
     state = load("digest_state.json", {"reported": []})
     results = load("results.json", {})
+    today = datetime.datetime.now(UK).date().isoformat()
     msg = compose(load("fixtures.json", []), results, load("points.json", {}),
-                  load("leaderboard.json", []), state["reported"],
-                  datetime.datetime.now(UK).date().isoformat())
+                  load("leaderboard.json", []), state.get("reported", []), today)
     if msg is None:
         print("Nothing to send today.")
         return
     from scripts.send_whatsapp import send
     send(msg)
     if os.environ.get("DRY_RUN"):
-        return  # don't advance reported-state on a dry run, or the real send would skip these
+        return  # don't advance state on a dry run, or the real send would skip these
+    state["reported"] = sorted(set(state.get("reported", [])) | set(results))
+    state["last_sent"] = today  # the workflow gate reads this to fire the morning send once per day
     with open(os.path.join(DATA, "digest_state.json"), "w") as fh:
-        json.dump({"reported": sorted(set(state["reported"]) | set(results))}, fh, indent=1)
+        json.dump(state, fh, indent=1)
 
 if __name__ == "__main__":
     main()
