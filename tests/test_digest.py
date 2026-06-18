@@ -59,6 +59,16 @@ def test_karim_mover_directions():
     dn = digest._karim_mover(base + [{"player": "Karim", "rank": 12, "movement": -2, "total": 3}])
     assert up == "📈 Karim up 4 to 9" and dn == "📉 Karim down 2 to 12"
 
+def test_misspelling_covers_exact_score_section():
+    import random
+    lb = [{"player": "Karim", "total": 6, "exact": 1, "result": 0, "rank": 1, "movement": 0, "group_pts": 6, "knockout_pts": 0}]
+    msg = compose(fixtures=FIXTURES, results={"1": {"home": 2, "away": 1}},
+                  points={"1": {"Karim": 3}}, leaderboard=lb, reported=[], today="2026-06-12")
+    assert "🎯 Exact: Karim" in msg                 # compose keeps the real name...
+    out, pick = digest.garble_karim(msg, rng=random.Random(2))
+    assert f"🎯 Exact: {pick}" in out                # ...the garble step misspells it in the exact section too
+    assert "Karim" not in out
+
 def test_garble_karim_replaces_with_a_typo():
     import random
     out, pick = digest.garble_karim("1. Karim — 12\n🎯 Exact: Karim", rng=random.Random(1))
