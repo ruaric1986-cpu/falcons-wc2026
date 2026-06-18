@@ -1,0 +1,12 @@
+name = "falcons-morning-trigger"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+# Cloudflare crons are UTC. We fire at both 06:30 and 07:30 UTC; the Worker only
+# dispatches on the tick that is 07:30 in London (handles BST and GMT).
+[triggers]
+crons = ["30 6 * * *", "30 7 * * *"]
+
+# Secrets (do NOT put these in this file — set them with `wrangler secret put`):
+#   GH_TOKEN     - GitHub fine-grained PAT, repo falcons-wc2026, Actions: Read and write
+#   TRIGGER_KEY  - optional; any random string, enables the manual ?key=... test endpoint
