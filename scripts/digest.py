@@ -27,6 +27,22 @@ def garble_karim(text, exclude=None, rng=random):
 def _uk(dt_str):
     return datetime.datetime.fromisoformat(dt_str.replace("Z", "+00:00")).astimezone(UK)
 
+def _ordinal(n):
+    suf = "th" if 10 <= n % 100 <= 20 else {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
+    return f"{n}{suf}"
+
+def _karim_mover(leaderboard):
+    """A plain movers-style line for Karim (no commentary), shown whether he moved or not."""
+    e = next((r for r in leaderboard if r["player"] == "Karim"), None)
+    if e is None:
+        return None
+    m, rank = e["movement"], e["rank"]
+    if m > 0:
+        return f"📈 Karim up {m} to {rank}"
+    if m < 0:
+        return f"📉 Karim down {-m} to {rank}"
+    return f"➡️ Karim {_ordinal(rank)}"
+
 def compose(fixtures, results, points, leaderboard, reported, today):
     fx_by_num = {str(f["number"]): f for f in fixtures}
     new = [mid for mid in results if mid not in reported and mid in fx_by_num]
@@ -53,6 +69,11 @@ def compose(fixtures, results, points, leaderboard, reported, today):
         climbers = [r for r in leaderboard[5:] if r["movement"] >= 3]
         for r in climbers[:2]:
             lines.append(f"📈 {r['player']} up {r['movement']} to {r['rank']}")
+        # Always feature Karim in the movers section (unless he's already shown above)
+        if not any(r["player"] == "Karim" for r in leaderboard[:5] + climbers[:2]):
+            km = _karim_mover(leaderboard)
+            if km:
+                lines.append(km)
         lines.append("")
     if todays:
         lines.append("*Today:*")

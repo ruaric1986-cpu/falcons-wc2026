@@ -41,6 +41,24 @@ def test_dry_run_does_not_advance_reported_state(tmp_path, monkeypatch):
     # state must be untouched so the real send still reports these results
     assert json.loads((tmp_path / "digest_state.json").read_text()) == {"reported": []}
 
+def test_karim_always_in_movers_no_commentary():
+    def row(player, total, rank, movement):
+        return {"player": player, "total": total, "exact": 0, "result": 0,
+                "rank": rank, "movement": movement, "group_pts": total, "knockout_pts": 0}
+    lb = [row(f"P{i}", 30 - i, i + 1, 0) for i in range(5)] + [row("Karim", 3, 14, 0)]
+    msg = compose(fixtures=FIXTURES, results={"1": {"home": 2, "away": 1}},
+                  points={"1": {"P0": 3}}, leaderboard=lb, reported=[], today="2026-06-12")
+    assert "➡️ Karim 14th" in msg          # featured even with no movement
+    assert msg.count("Karim") == 1          # once, not duplicated
+    for w in ("watch", "dead last", "midtable", "stragglers"):
+        assert w not in msg                 # no commentary
+
+def test_karim_mover_directions():
+    base = [{"player": f"P{i}", "rank": i + 1, "movement": 0, "total": 9} for i in range(5)]
+    up = digest._karim_mover(base + [{"player": "Karim", "rank": 9, "movement": 4, "total": 3}])
+    dn = digest._karim_mover(base + [{"player": "Karim", "rank": 12, "movement": -2, "total": 3}])
+    assert up == "📈 Karim up 4 to 9" and dn == "📉 Karim down 2 to 12"
+
 def test_garble_karim_replaces_with_a_typo():
     import random
     out, pick = digest.garble_karim("1. Karim — 12\n🎯 Exact: Karim", rng=random.Random(1))
