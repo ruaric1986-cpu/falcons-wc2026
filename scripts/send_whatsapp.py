@@ -9,7 +9,7 @@ def send(message):
         print("=== DRY RUN — would send to WhatsApp ===")
         print(message)
         return
-    host = os.environ.get("GREENAPI_HOST", "api.green-api.com")
+    host = os.environ.get("GREENAPI_HOST", "7107.api.greenapi.com")
     url = (f"https://{host}/waInstance{os.environ['GREENAPI_ID_INSTANCE']}"
            f"/sendMessage/{os.environ['GREENAPI_TOKEN']}")
     resp = _post(url, {"chatId": os.environ["WHATSAPP_GROUP_ID"], "message": message})
