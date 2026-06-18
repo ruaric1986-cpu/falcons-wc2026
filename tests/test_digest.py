@@ -41,6 +41,22 @@ def test_dry_run_does_not_advance_reported_state(tmp_path, monkeypatch):
     # state must be untouched so the real send still reports these results
     assert json.loads((tmp_path / "digest_state.json").read_text()) == {"reported": []}
 
+def test_karim_watch_always_included_and_ribbed_when_last():
+    lb = [
+        {"player": "Ruari", "total": 10, "exact": 3, "result": 1, "rank": 1, "movement": 0, "group_pts": 10, "knockout_pts": 0},
+        {"player": "Daisy", "total": 6, "exact": 1, "result": 3, "rank": 2, "movement": 0, "group_pts": 6, "knockout_pts": 0},
+        {"player": "Karim", "total": 1, "exact": 0, "result": 1, "rank": 3, "movement": 0, "group_pts": 1, "knockout_pts": 0},
+    ]
+    msg = compose(fixtures=FIXTURES, results={"1": {"home": 2, "away": 1}},
+                  points={"1": {"Ruari": 3}}, leaderboard=lb, reported=[], today="2026-06-12")
+    assert "Karim watch" in msg          # named in every update (main() then garbles the spelling)
+    assert "dead last" in msg            # ribbed when bottom
+
+def test_karim_line_bands():
+    bottom = [{"player": "X", "rank": 1, "total": 9}, {"player": "Karim", "rank": 2, "total": 2}]
+    assert "dead last" in digest.karim_line(bottom)
+    assert digest.karim_line([{"player": "X", "rank": 1, "total": 9}]) is None  # no Karim -> nothing
+
 def test_garble_karim_replaces_with_a_typo():
     import random
     out, pick = digest.garble_karim("1. Karim — 12\n🎯 Exact: Karim", rng=random.Random(1))

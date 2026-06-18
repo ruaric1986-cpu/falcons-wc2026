@@ -5,12 +5,13 @@ DATA = os.path.join(os.path.dirname(__file__), "..", "data")
 UK = ZoneInfo("Europe/London")
 SITE_URL = "https://ruaric1986-cpu.github.io/falcons-wc2026/"
 
-# Inside joke: Karim's name is "accidentally" mangled in every morning send,
-# a different way each time. (None of these contain the literal "Karim".)
+# Inside joke: Karim's name is "accidentally" mis-spelled in every morning send,
+# a different way each time. Only plausible mis-spellings of his first name — the
+# kind you'd write genuinely trying (and failing) to get it right. No add-ons, no
+# joke names. (None contain the literal "Karim".)
 KARIM_TYPOS = [
-    "Kareem", "Kraim", "Karreem", "Khareem", "Carrim", "Kazza", "Kazaam",
-    "Kareemio", "Karingo", "Krimbo", "Kreem", "Sir Kareem", "Big Karz",
-    "Kahreem", "Kazoom", "Karemba", "Kebab", "Karabiner",
+    "Kareem", "Kraim", "Kareim", "Karrim", "Karreem", "Kariim",
+    "Kahrim", "Khareem", "Kahreem", "Carrim", "Kareme", "Kaream", "Kaarim",
 ]
 
 def garble_karim(text, exclude=None, rng=random):
@@ -25,6 +26,26 @@ def garble_karim(text, exclude=None, rng=random):
 
 def _uk(dt_str):
     return datetime.datetime.fromisoformat(dt_str.replace("Z", "+00:00")).astimezone(UK)
+
+def _ordinal(n):
+    suf = "th" if 10 <= n % 100 <= 20 else {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
+    return f"{n}{suf}"
+
+def karim_line(leaderboard):
+    """A standing line for Karim included in every update — with a dig if he's struggling."""
+    e = next((r for r in leaderboard if r["player"] == "Karim"), None)
+    if not e:
+        return None
+    n, rank, total = len(leaderboard), e["rank"], e["total"]
+    if rank == n:
+        note = "dead last 🪦"
+    elif n >= 3 and rank > (2 * n) // 3:
+        note = "down among the stragglers"
+    elif rank <= 3:
+        note = "somehow up near the top"
+    else:
+        note = "midtable mediocrity"
+    return f"👀 Karim watch: {_ordinal(rank)} on {total} {'pt' if total == 1 else 'pts'} — {note}"
 
 def compose(fixtures, results, points, leaderboard, reported, today):
     fx_by_num = {str(f["number"]): f for f in fixtures}
@@ -57,6 +78,9 @@ def compose(fixtures, results, points, leaderboard, reported, today):
         lines.append("*Today:*")
         for f in todays:
             lines.append(f"{_uk(f['kickoff']).strftime('%H:%M')} {f['home']} v {f['away']}")
+    kl = karim_line(leaderboard)
+    if kl:
+        lines += ["", kl]
     lines += ["", f"📊 Full table: {SITE_URL}"]
     return "\n".join(lines).strip()
 
