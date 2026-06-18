@@ -17,9 +17,19 @@ jobs:
         run: |
           python - <<'PY'
           import os, requests
-          host = os.environ.get("GREENAPI_HOST") or "api.green-api.com"
           iid = os.environ["GREENAPI_ID_INSTANCE"]
           tok = os.environ["GREENAPI_TOKEN"]
-          r = requests.get(f"https://{host}/waInstance{iid}/getStateInstance/{tok}", timeout=30)
-          print("getStateInstance:", r.status_code, r.text)
+          prefix = iid[:4]
+          hosts = [
+              "api.green-api.com",
+              "api.greenapi.com",
+              f"{prefix}.api.green-api.com",
+              f"{prefix}.api.greenapi.com",
+          ]
+          for h in hosts:
+              try:
+                  r = requests.get(f"https://{h}/waInstance{iid}/getStateInstance/{tok}", timeout=20)
+                  print(h, "->", r.status_code, r.text[:200])
+              except Exception as e:
+                  print(h, "-> ERR", repr(e)[:140])
           PY
