@@ -41,6 +41,24 @@ def test_dry_run_does_not_advance_reported_state(tmp_path, monkeypatch):
     # state must be untouched so the real send still reports these results
     assert json.loads((tmp_path / "digest_state.json").read_text()) == {"reported": []}
 
+def test_garble_karim_replaces_with_a_typo():
+    import random
+    out, pick = digest.garble_karim("1. Karim — 12\n🎯 Exact: Karim", rng=random.Random(1))
+    assert pick in digest.KARIM_TYPOS
+    assert "Karim" not in out          # the real name is gone
+    assert out.count(pick) == 2        # both occurrences swapped, same typo
+
+def test_garble_karim_noop_without_karim():
+    out, pick = digest.garble_karim("1. Ruari — 9")
+    assert out == "1. Ruari — 9" and pick is None
+
+def test_garble_karim_avoids_immediate_repeat():
+    import random
+    prev = digest.KARIM_TYPOS[0]
+    for seed in range(25):
+        _, pick = digest.garble_karim("Karim", exclude=prev, rng=random.Random(seed))
+        assert pick != prev
+
 def test_skips_when_already_sent_today(tmp_path, monkeypatch):
     import datetime
     from zoneinfo import ZoneInfo

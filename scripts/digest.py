@@ -1,9 +1,27 @@
-import json, os, datetime
+import json, os, datetime, random
 from zoneinfo import ZoneInfo
 
 DATA = os.path.join(os.path.dirname(__file__), "..", "data")
 UK = ZoneInfo("Europe/London")
 SITE_URL = "https://ruaric1986-cpu.github.io/falcons-wc2026/"
+
+# Inside joke: Karim's name is "accidentally" mangled in every morning send,
+# a different way each time. (None of these contain the literal "Karim".)
+KARIM_TYPOS = [
+    "Kareem", "Kraim", "Karreem", "Khareem", "Carrim", "Kazza", "Kazaam",
+    "Kareemio", "Karingo", "Krimbo", "Kreem", "Sir Kareem", "Big Karz",
+    "Kahreem", "Kazoom", "Karemba", "Kebab", "Karabiner",
+]
+
+def garble_karim(text, exclude=None, rng=random):
+    """Swap 'Karim' for a random comical misspelling (consistent within a message).
+    Returns (new_text, chosen_typo) — chosen_typo is None if Karim wasn't present."""
+    if "Karim" not in text:
+        return text, None
+    choices = [t for t in KARIM_TYPOS if t != exclude] or KARIM_TYPOS
+    pick = rng.choice(choices)
+    return text.replace("Karim", pick), pick
+
 
 def _uk(dt_str):
     return datetime.datetime.fromisoformat(dt_str.replace("Z", "+00:00")).astimezone(UK)
@@ -60,10 +78,13 @@ def main():
     if msg is None:
         print("Nothing to send today.")
         return
+    msg, typo = garble_karim(msg, exclude=state.get("last_karim_typo"))
     from scripts.send_whatsapp import send
     send(msg)
     if os.environ.get("DRY_RUN"):
         return  # don't advance state on a dry run, or the real send would skip these
+    if typo:
+        state["last_karim_typo"] = typo
     state["reported"] = sorted(set(state.get("reported", [])) | set(results))
     state["last_sent"] = today  # the workflow gate reads this to fire the morning send once per day
     with open(os.path.join(DATA, "digest_state.json"), "w") as fh:
