@@ -52,6 +52,9 @@ def main():
     state = load("digest_state.json", {"reported": []})
     results = load("results.json", {})
     today = datetime.datetime.now(UK).date().isoformat()
+    if state.get("last_sent") == today and not os.environ.get("DRY_RUN") and not os.environ.get("FORCE_SEND"):
+        print(f"Morning update already sent today ({today}); skipping to avoid a duplicate.")
+        return
     msg = compose(load("fixtures.json", []), results, load("points.json", {}),
                   load("leaderboard.json", []), state.get("reported", []), today)
     if msg is None:

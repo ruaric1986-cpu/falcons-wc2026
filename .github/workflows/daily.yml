@@ -12,6 +12,9 @@ on:
       dry_run:
         description: "1 = print digest instead of sending"
         default: ""
+      force:
+        description: "1 = send even if already sent today (override the once-per-day guard)"
+        default: ""
   push:
     branches: [main]
 
@@ -83,6 +86,7 @@ jobs:
           GREENAPI_TOKEN: ${{ secrets.GREENAPI_TOKEN }}
           WHATSAPP_GROUP_ID: ${{ secrets.WHATSAPP_GROUP_ID }}
           DRY_RUN: ${{ github.event.inputs.dry_run }}
+          FORCE_SEND: ${{ github.event.inputs.force }}
         run: |
           python -m scripts.digest
           git add data/digest_state.json && git diff --cached --quiet || { git commit -m "data: digest state" && git push; }

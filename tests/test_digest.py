@@ -41,6 +41,24 @@ def test_dry_run_does_not_advance_reported_state(tmp_path, monkeypatch):
     # state must be untouched so the real send still reports these results
     assert json.loads((tmp_path / "digest_state.json").read_text()) == {"reported": []}
 
+def test_skips_when_already_sent_today(tmp_path, monkeypatch):
+    import datetime
+    from zoneinfo import ZoneInfo
+    import scripts.send_whatsapp as sw
+    sent = []
+    monkeypatch.setattr(sw, "send", lambda msg: sent.append(msg))
+    monkeypatch.setattr(digest, "DATA", str(tmp_path))
+    monkeypatch.delenv("DRY_RUN", raising=False)
+    monkeypatch.delenv("FORCE_SEND", raising=False)
+    today = datetime.datetime.now(ZoneInfo("Europe/London")).date().isoformat()
+    (tmp_path / "fixtures.json").write_text(json.dumps(FIXTURES))
+    (tmp_path / "results.json").write_text(json.dumps({"1": {"home": 2, "away": 1}}))
+    (tmp_path / "points.json").write_text(json.dumps({"1": {"Ruari": 3}}))
+    (tmp_path / "leaderboard.json").write_text(json.dumps(LB))
+    (tmp_path / "digest_state.json").write_text(json.dumps({"reported": ["1"], "last_sent": today}))
+    digest.main()
+    assert sent == []   # already sent today -> no second message
+
 def test_real_send_records_last_sent(tmp_path, monkeypatch):
     import datetime
     from zoneinfo import ZoneInfo
