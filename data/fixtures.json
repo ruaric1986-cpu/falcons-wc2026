@@ -652,8 +652,8 @@
   "stage": "R32",
   "group": null,
   "kickoff": "2026-06-28T19:00:00Z",
-  "home": "TBD",
-  "away": "TBD",
+  "home": "South Africa",
+  "away": "Canada",
   "api_id": 537417
  },
  {
@@ -661,8 +661,8 @@
   "stage": "R32",
   "group": null,
   "kickoff": "2026-06-29T17:00:00Z",
-  "home": "TBD",
-  "away": "TBD",
+  "home": "Brazil",
+  "away": "Japan",
   "api_id": 537423
  },
  {
@@ -679,8 +679,8 @@
   "stage": "R32",
   "group": null,
   "kickoff": "2026-06-30T01:00:00Z",
-  "home": "TBD",
-  "away": "TBD",
+  "home": "Netherlands",
+  "away": "Morocco",
   "api_id": 537418
  },
  {
@@ -734,7 +734,7 @@
   "group": null,
   "kickoff": "2026-07-02T00:00:00Z",
   "home": "United States",
-  "away": "TBD",
+  "away": "Bosnia-Herzegovina",
   "api_id": 537421
  },
  {
@@ -760,7 +760,7 @@
   "stage": "R32",
   "group": null,
   "kickoff": "2026-07-03T03:00:00Z",
-  "home": "TBD",
+  "home": "Switzerland",
   "away": "TBD",
   "api_id": 537429
  },
@@ -769,7 +769,7 @@
   "stage": "R32",
   "group": null,
   "kickoff": "2026-07-03T18:00:00Z",
-  "home": "TBD",
+  "home": "Australia",
   "away": "TBD",
   "api_id": 537428
  },
