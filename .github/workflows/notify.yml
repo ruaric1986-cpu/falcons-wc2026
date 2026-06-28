@@ -3,10 +3,13 @@ on:
   workflow_dispatch:
     inputs:
       message:
-        description: "Text message to send (used when no file is attached)"
+        description: "Text message to send (used when no file_url is given)"
         required: false
-      file:
-        description: "Repo path of a file to attach, e.g. sheets/Falcons_WC2026_R32_Predictions.xlsx"
+      file_url:
+        description: "Public URL of a file to attach (e.g. the sheet hosted on the site)"
+        required: false
+      file_name:
+        description: "Filename to show in WhatsApp for the attachment"
         required: false
       caption:
         description: "Caption to accompany the attached file"
@@ -26,15 +29,16 @@ jobs:
           GREENAPI_TOKEN: ${{ secrets.GREENAPI_TOKEN }}
           WHATSAPP_GROUP_ID: ${{ secrets.WHATSAPP_GROUP_ID }}
           MSG: ${{ inputs.message }}
-          FILE: ${{ inputs.file }}
+          FILE_URL: ${{ inputs.file_url }}
+          FILE_NAME: ${{ inputs.file_name }}
           CAPTION: ${{ inputs.caption }}
         run: |
           python - <<'PY'
           import os
           from scripts.send_whatsapp import send, send_file
-          f = os.environ.get("FILE")
-          if f:
-              send_file(f, os.environ.get("CAPTION", ""))
+          u = os.environ.get("FILE_URL")
+          if u:
+              send_file(u, os.environ.get("CAPTION", ""), os.environ.get("FILE_NAME") or "file")
           else:
               send(os.environ["MSG"])
           PY
