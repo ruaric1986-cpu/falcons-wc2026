@@ -3,8 +3,14 @@ on:
   workflow_dispatch:
     inputs:
       message:
-        description: "Message to send to the WhatsApp group"
-        required: true
+        description: "Text message to send (used when no file is attached)"
+        required: false
+      file:
+        description: "Repo path of a file to attach, e.g. sheets/Falcons_WC2026_R32_Predictions.xlsx"
+        required: false
+      caption:
+        description: "Caption to accompany the attached file"
+        required: false
 
 jobs:
   notify:
@@ -14,10 +20,21 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
       - run: pip install -q requests
-      - name: Send message
+      - name: Send
         env:
           GREENAPI_ID_INSTANCE: ${{ secrets.GREENAPI_ID_INSTANCE }}
           GREENAPI_TOKEN: ${{ secrets.GREENAPI_TOKEN }}
           WHATSAPP_GROUP_ID: ${{ secrets.WHATSAPP_GROUP_ID }}
           MSG: ${{ inputs.message }}
-        run: python -c "import os; from scripts.send_whatsapp import send; send(os.environ['MSG'])"
+          FILE: ${{ inputs.file }}
+          CAPTION: ${{ inputs.caption }}
+        run: |
+          python - <<'PY'
+          import os
+          from scripts.send_whatsapp import send, send_file
+          f = os.environ.get("FILE")
+          if f:
+              send_file(f, os.environ.get("CAPTION", ""))
+          else:
+              send(os.environ["MSG"])
+          PY

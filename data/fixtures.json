@@ -68,7 +68,7 @@
   "group": "D",
   "kickoff": "2026-06-14T04:00:00Z",
   "home": "Australia",
-  "away": "T\u00fcrkiye",
+  "away": "Türkiye",
   "api_id": 537346
  },
  {
@@ -77,7 +77,7 @@
   "group": "E",
   "kickoff": "2026-06-14T17:00:00Z",
   "home": "Germany",
-  "away": "Cura\u00e7ao",
+  "away": "Curaçao",
   "api_id": 537351
  },
  {
@@ -94,7 +94,7 @@
   "stage": "GROUP",
   "group": "E",
   "kickoff": "2026-06-14T23:00:00Z",
-  "home": "C\u00f4te d'Ivoire",
+  "home": "Côte d'Ivoire",
   "away": "Ecuador",
   "api_id": 537352
  },
@@ -283,7 +283,7 @@
   "stage": "GROUP",
   "group": "D",
   "kickoff": "2026-06-20T03:00:00Z",
-  "home": "T\u00fcrkiye",
+  "home": "Türkiye",
   "away": "Paraguay",
   "api_id": 537347
  },
@@ -293,7 +293,7 @@
   "group": "E",
   "kickoff": "2026-06-20T20:00:00Z",
   "home": "Germany",
-  "away": "C\u00f4te d'Ivoire",
+  "away": "Côte d'Ivoire",
   "api_id": 537353
  },
  {
@@ -311,7 +311,7 @@
   "group": "C",
   "kickoff": "2026-06-21T00:00:00Z",
   "home": "Ecuador",
-  "away": "Cura\u00e7ao",
+  "away": "Curaçao",
   "api_id": 537354
  },
  {
@@ -490,8 +490,8 @@
   "stage": "GROUP",
   "group": "E",
   "kickoff": "2026-06-25T20:00:00Z",
-  "home": "Cura\u00e7ao",
-  "away": "C\u00f4te d'Ivoire",
+  "home": "Curaçao",
+  "away": "Côte d'Ivoire",
   "api_id": 537356
  },
  {
@@ -517,7 +517,7 @@
   "stage": "GROUP",
   "group": "D",
   "kickoff": "2026-06-26T02:00:00Z",
-  "home": "T\u00fcrkiye",
+  "home": "Türkiye",
   "away": "United States",
   "api_id": 537349
  },
@@ -671,7 +671,7 @@
   "group": null,
   "kickoff": "2026-06-29T20:30:00Z",
   "home": "Germany",
-  "away": "TBD",
+  "away": "Paraguay",
   "api_id": 537415
  },
  {
@@ -688,8 +688,8 @@
   "stage": "R32",
   "group": null,
   "kickoff": "2026-06-30T17:00:00Z",
-  "home": "Ivory Coast",
-  "away": "TBD",
+  "home": "Côte d'Ivoire",
+  "away": "Norway",
   "api_id": 537424
  },
  {
@@ -697,8 +697,8 @@
   "stage": "R32",
   "group": null,
   "kickoff": "2026-06-30T21:00:00Z",
-  "home": "TBD",
-  "away": "TBD",
+  "home": "France",
+  "away": "Sweden",
   "api_id": 537416
  },
  {
@@ -707,7 +707,7 @@
   "group": null,
   "kickoff": "2026-07-01T01:00:00Z",
   "home": "Mexico",
-  "away": "TBD",
+  "away": "Ecuador",
   "api_id": 537425
  },
  {
@@ -715,8 +715,8 @@
   "stage": "R32",
   "group": null,
   "kickoff": "2026-07-01T16:00:00Z",
-  "home": "TBD",
-  "away": "TBD",
+  "home": "England",
+  "away": "DR Congo",
   "api_id": 537426
  },
  {
@@ -724,8 +724,8 @@
   "stage": "R32",
   "group": null,
   "kickoff": "2026-07-01T20:00:00Z",
-  "home": "TBD",
-  "away": "TBD",
+  "home": "Belgium",
+  "away": "Senegal",
   "api_id": 537422
  },
  {
@@ -742,8 +742,8 @@
   "stage": "R32",
   "group": null,
   "kickoff": "2026-07-02T19:00:00Z",
-  "home": "TBD",
-  "away": "TBD",
+  "home": "Spain",
+  "away": "Austria",
   "api_id": 537420
  },
  {
@@ -751,8 +751,8 @@
   "stage": "R32",
   "group": null,
   "kickoff": "2026-07-02T23:00:00Z",
-  "home": "TBD",
-  "away": "TBD",
+  "home": "Portugal",
+  "away": "Croatia",
   "api_id": 537419
  },
  {
@@ -761,7 +761,7 @@
   "group": null,
   "kickoff": "2026-07-03T03:00:00Z",
   "home": "Switzerland",
-  "away": "TBD",
+  "away": "Algeria",
   "api_id": 537429
  },
  {
@@ -770,7 +770,7 @@
   "group": null,
   "kickoff": "2026-07-03T18:00:00Z",
   "home": "Australia",
-  "away": "TBD",
+  "away": "Egypt",
   "api_id": 537428
  },
  {
@@ -779,7 +779,7 @@
   "group": null,
   "kickoff": "2026-07-03T22:00:00Z",
   "home": "Argentina",
-  "away": "TBD",
+  "away": "Cape Verde",
   "api_id": 537427
  },
  {
@@ -787,8 +787,8 @@
   "stage": "R32",
   "group": null,
   "kickoff": "2026-07-04T01:30:00Z",
-  "home": "TBD",
-  "away": "TBD",
+  "home": "Colombia",
+  "away": "Ghana",
   "api_id": 537430
  },
  {
