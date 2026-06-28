@@ -5,20 +5,35 @@ DATA = os.path.join(os.path.dirname(__file__), "..", "data")
 UK = ZoneInfo("Europe/London")
 SITE_URL = "https://ruaric1986-cpu.github.io/falcons-wc2026/"
 
-# Inside joke: Karim's name is "accidentally" mangled in every morning send, and it
-# gets WORSE each day — starting as a plausible mis-spelling and drifting steadily
-# away until he's just called "Steve". One step per appearance; clamps at the end.
+# Inside joke: Karim's name is "accidentally" mangled in every morning update, drifting
+# one step further from reality each match-day and ending up as plain "Steve" for the
+# final. Date-driven: one entry per match-day from now to the final, indexed by
+# match-days remaining, so the final update always lands on "Steve" (and rest days get
+# no update, hence no step, since the digest only sends on match days).
 KARIM_DRIFT = [
-    "Kareem", "Kareen", "Karen", "Kaden", "Kieran",
-    "Keiran", "Kev", "Kevin", "Stevan", "Steve",
+    "Kareem", "Kareen", "Karen", "Karon", "Kaden", "Kaiden", "Kayden", "Hayden",
+    "Aidan", "Aiden", "Aaron", "Darren", "Damian", "Damon", "Devon", "Devin",
+    "Steven", "Steve",
 ]
 
-def drift_karim(text, step):
-    """Swap 'Karim' for the name at this point in the drift (clamped at the last entry).
-    Returns (new_text, used) — used is True only if Karim was present."""
+def _fixture_date(kickoff):
+    return _uk(kickoff).date() if kickoff and "T" in str(kickoff) else None
+
+def karim_drift_name(fixtures, today_iso):
+    """Today's drift name, indexed by match-days remaining to the final so the final
+    match-day resolves to 'Steve' and earlier days walk back through the list."""
+    today = datetime.date.fromisoformat(today_iso)
+    days = sorted({d for d in (_fixture_date(f.get("kickoff")) for f in fixtures) if d})
+    if not days:
+        return KARIM_DRIFT[0]
+    remaining = sum(1 for d in days if today <= d <= days[-1])
+    idx = len(KARIM_DRIFT) - remaining
+    return KARIM_DRIFT[max(0, min(idx, len(KARIM_DRIFT) - 1))]
+
+def apply_karim(text, name):
+    """Swap every 'Karim' for the given drift name. Returns (text, used)."""
     if "Karim" not in text:
         return text, False
-    name = KARIM_DRIFT[min(step, len(KARIM_DRIFT) - 1)]
     return text.replace("Karim", name), True
 
 
@@ -93,19 +108,17 @@ def main():
     if state.get("last_sent") == today and not os.environ.get("DRY_RUN") and not os.environ.get("FORCE_SEND"):
         print(f"Morning update already sent today ({today}); skipping to avoid a duplicate.")
         return
-    msg = compose(load("fixtures.json", []), results, load("points.json", {}),
+    fixtures = load("fixtures.json", [])
+    msg = compose(fixtures, results, load("points.json", {}),
                   load("leaderboard.json", []), state.get("reported", []), today)
     if msg is None:
         print("Nothing to send today.")
         return
-    step = state.get("karim_step", 0)
-    msg, used = drift_karim(msg, step)
+    msg, _ = apply_karim(msg, karim_drift_name(fixtures, today))
     from scripts.send_whatsapp import send
     send(msg)
     if os.environ.get("DRY_RUN"):
         return  # don't advance state on a dry run, or the real send would skip these
-    if used:
-        state["karim_step"] = step + 1  # each appearance drifts one step further from "Karim"
     state["reported"] = sorted(set(state.get("reported", [])) | set(results))
     state["last_sent"] = today  # the workflow gate reads this to fire the morning send once per day
     with open(os.path.join(DATA, "digest_state.json"), "w") as fh:

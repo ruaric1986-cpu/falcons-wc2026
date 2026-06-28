@@ -59,16 +59,26 @@ def test_karim_mover_directions():
     dn = digest._karim_mover(base + [{"player": "Karim", "rank": 12, "movement": -2, "total": 3}])
     assert up == "📈 Karim up 4 to 9" and dn == "📉 Karim down 2 to 12"
 
-def test_drift_sequence_worsens_and_ends_at_steve():
-    assert digest.KARIM_DRIFT[-1] == "Steve"
-    assert digest.drift_karim("Karim", 0) == ("Kareem", True)   # day 1: still close
-    assert digest.drift_karim("Karim", 1)[0] == "Kareen"        # drifting
-    assert digest.drift_karim("Karim", 999)[0] == "Steve"       # clamps at the end
+def test_drift_list_distinct_and_ends_steve():
+    assert digest.KARIM_DRIFT[0] == "Kareem" and digest.KARIM_DRIFT[-1] == "Steve"
+    assert len(set(digest.KARIM_DRIFT)) == len(digest.KARIM_DRIFT)   # no repeats
 
-def test_drift_noop_without_karim():
-    assert digest.drift_karim("1. Ruari — 9", 0) == ("1. Ruari — 9", False)
+def test_karim_drift_is_date_driven_and_ends_steve():
+    import datetime
+    base = datetime.date(2026, 7, 1)
+    days = [base + datetime.timedelta(days=i) for i in range(len(digest.KARIM_DRIFT))]
+    fx = [{"number": 100 + i, "kickoff": d.isoformat() + "T18:00:00Z"} for i, d in enumerate(days)]
+    assert digest.karim_drift_name(fx, days[0].isoformat()) == digest.KARIM_DRIFT[0]      # furthest out
+    assert digest.karim_drift_name(fx, days[-2].isoformat()) == digest.KARIM_DRIFT[-2]    # day before final
+    assert digest.karim_drift_name(fx, days[-1].isoformat()) == "Steve"                   # the final
+    after = (days[-1] + datetime.timedelta(days=3)).isoformat()
+    assert digest.karim_drift_name(fx, after) == "Steve"                                  # stays Steve
 
-def test_drift_applied_on_send_and_advances(tmp_path, monkeypatch):
+def test_apply_karim_replaces_all_and_noop():
+    assert digest.apply_karim("1. Karim — 9\n🎯 Karim", "Steve") == ("1. Steve — 9\n🎯 Steve", True)
+    assert digest.apply_karim("1. Ruari — 9", "Steve") == ("1. Ruari — 9", False)
+
+def test_drift_applied_on_send(tmp_path, monkeypatch):
     import scripts.send_whatsapp as sw
     sent = []
     monkeypatch.setattr(sw, "send", lambda m: sent.append(m))
@@ -82,8 +92,8 @@ def test_drift_applied_on_send_and_advances(tmp_path, monkeypatch):
     (tmp_path / "leaderboard.json").write_text(json.dumps(lb))
     (tmp_path / "digest_state.json").write_text(json.dumps({"reported": []}))
     digest.main()
-    assert sent and "Kareem" in sent[0] and "Karim" not in sent[0]   # drift applied everywhere, incl. exact section
-    assert json.loads((tmp_path / "digest_state.json").read_text())["karim_step"] == 1  # advances for next time
+    assert sent and "Karim" not in sent[0]                          # real name never sent
+    assert any(n in sent[0] for n in digest.KARIM_DRIFT)            # a drift name was used (incl. exact section)
 
 def test_skips_when_already_sent_today(tmp_path, monkeypatch):
     import datetime
