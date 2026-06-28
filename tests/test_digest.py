@@ -59,33 +59,31 @@ def test_karim_mover_directions():
     dn = digest._karim_mover(base + [{"player": "Karim", "rank": 12, "movement": -2, "total": 3}])
     assert up == "📈 Karim up 4 to 9" and dn == "📉 Karim down 2 to 12"
 
-def test_misspelling_covers_exact_score_section():
-    import random
+def test_drift_sequence_worsens_and_ends_at_steve():
+    assert digest.KARIM_DRIFT[-1] == "Steve"
+    assert digest.drift_karim("Karim", 0) == ("Kareem", True)   # day 1: still close
+    assert digest.drift_karim("Karim", 1)[0] == "Kareen"        # drifting
+    assert digest.drift_karim("Karim", 999)[0] == "Steve"       # clamps at the end
+
+def test_drift_noop_without_karim():
+    assert digest.drift_karim("1. Ruari — 9", 0) == ("1. Ruari — 9", False)
+
+def test_drift_applied_on_send_and_advances(tmp_path, monkeypatch):
+    import scripts.send_whatsapp as sw
+    sent = []
+    monkeypatch.setattr(sw, "send", lambda m: sent.append(m))
+    monkeypatch.setattr(digest, "DATA", str(tmp_path))
+    monkeypatch.delenv("DRY_RUN", raising=False)
+    monkeypatch.delenv("FORCE_SEND", raising=False)
     lb = [{"player": "Karim", "total": 6, "exact": 1, "result": 0, "rank": 1, "movement": 0, "group_pts": 6, "knockout_pts": 0}]
-    msg = compose(fixtures=FIXTURES, results={"1": {"home": 2, "away": 1}},
-                  points={"1": {"Karim": 3}}, leaderboard=lb, reported=[], today="2026-06-12")
-    assert "🎯 Exact: Karim" in msg                 # compose keeps the real name...
-    out, pick = digest.garble_karim(msg, rng=random.Random(2))
-    assert f"🎯 Exact: {pick}" in out                # ...the garble step misspells it in the exact section too
-    assert "Karim" not in out
-
-def test_garble_karim_replaces_with_a_typo():
-    import random
-    out, pick = digest.garble_karim("1. Karim — 12\n🎯 Exact: Karim", rng=random.Random(1))
-    assert pick in digest.KARIM_TYPOS
-    assert "Karim" not in out          # the real name is gone
-    assert out.count(pick) == 2        # both occurrences swapped, same typo
-
-def test_garble_karim_noop_without_karim():
-    out, pick = digest.garble_karim("1. Ruari — 9")
-    assert out == "1. Ruari — 9" and pick is None
-
-def test_garble_karim_avoids_immediate_repeat():
-    import random
-    prev = digest.KARIM_TYPOS[0]
-    for seed in range(25):
-        _, pick = digest.garble_karim("Karim", exclude=prev, rng=random.Random(seed))
-        assert pick != prev
+    (tmp_path / "fixtures.json").write_text(json.dumps(FIXTURES))
+    (tmp_path / "results.json").write_text(json.dumps({"1": {"home": 2, "away": 1}}))
+    (tmp_path / "points.json").write_text(json.dumps({"1": {"Karim": 3}}))
+    (tmp_path / "leaderboard.json").write_text(json.dumps(lb))
+    (tmp_path / "digest_state.json").write_text(json.dumps({"reported": []}))
+    digest.main()
+    assert sent and "Kareem" in sent[0] and "Karim" not in sent[0]   # drift applied everywhere, incl. exact section
+    assert json.loads((tmp_path / "digest_state.json").read_text())["karim_step"] == 1  # advances for next time
 
 def test_skips_when_already_sent_today(tmp_path, monkeypatch):
     import datetime

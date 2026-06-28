@@ -1,27 +1,25 @@
-import json, os, datetime, random
+import json, os, datetime
 from zoneinfo import ZoneInfo
 
 DATA = os.path.join(os.path.dirname(__file__), "..", "data")
 UK = ZoneInfo("Europe/London")
 SITE_URL = "https://ruaric1986-cpu.github.io/falcons-wc2026/"
 
-# Inside joke: Karim's name is "accidentally" mis-spelled in every morning send,
-# a different way each time. Only plausible mis-spellings of his first name — the
-# kind you'd write genuinely trying (and failing) to get it right. No add-ons, no
-# joke names. (None contain the literal "Karim".)
-KARIM_TYPOS = [
-    "Kareem", "Kraim", "Kareim", "Karrim", "Karreem", "Kariim",
-    "Kahrim", "Khareem", "Kahreem", "Carrim", "Kareme", "Kaream", "Kaarim",
+# Inside joke: Karim's name is "accidentally" mangled in every morning send, and it
+# gets WORSE each day — starting as a plausible mis-spelling and drifting steadily
+# away until he's just called "Steve". One step per appearance; clamps at the end.
+KARIM_DRIFT = [
+    "Kareem", "Kareen", "Karen", "Kaden", "Kieran",
+    "Keiran", "Kev", "Kevin", "Stevan", "Steve",
 ]
 
-def garble_karim(text, exclude=None, rng=random):
-    """Swap 'Karim' for a random comical misspelling (consistent within a message).
-    Returns (new_text, chosen_typo) — chosen_typo is None if Karim wasn't present."""
+def drift_karim(text, step):
+    """Swap 'Karim' for the name at this point in the drift (clamped at the last entry).
+    Returns (new_text, used) — used is True only if Karim was present."""
     if "Karim" not in text:
-        return text, None
-    choices = [t for t in KARIM_TYPOS if t != exclude] or KARIM_TYPOS
-    pick = rng.choice(choices)
-    return text.replace("Karim", pick), pick
+        return text, False
+    name = KARIM_DRIFT[min(step, len(KARIM_DRIFT) - 1)]
+    return text.replace("Karim", name), True
 
 
 def _uk(dt_str):
@@ -100,13 +98,14 @@ def main():
     if msg is None:
         print("Nothing to send today.")
         return
-    msg, typo = garble_karim(msg, exclude=state.get("last_karim_typo"))
+    step = state.get("karim_step", 0)
+    msg, used = drift_karim(msg, step)
     from scripts.send_whatsapp import send
     send(msg)
     if os.environ.get("DRY_RUN"):
         return  # don't advance state on a dry run, or the real send would skip these
-    if typo:
-        state["last_karim_typo"] = typo
+    if used:
+        state["karim_step"] = step + 1  # each appearance drifts one step further from "Karim"
     state["reported"] = sorted(set(state.get("reported", [])) | set(results))
     state["last_sent"] = today  # the workflow gate reads this to fire the morning send once per day
     with open(os.path.join(DATA, "digest_state.json"), "w") as fh:
