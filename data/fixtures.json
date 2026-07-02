@@ -705,7 +705,7 @@
   "number": 79,
   "stage": "R32",
   "group": null,
-  "kickoff": "2026-07-01T01:00:00Z",
+  "kickoff": "2026-07-01T02:00:00Z",
   "home": "Mexico",
   "away": "Ecuador",
   "api_id": 537425
@@ -823,8 +823,8 @@
   "stage": "R16",
   "group": null,
   "kickoff": "2026-07-06T00:00:00Z",
-  "home": "TBD",
-  "away": "TBD",
+  "home": "Mexico",
+  "away": "England",
   "api_id": 537378
  },
  {
@@ -841,8 +841,8 @@
   "stage": "R16",
   "group": null,
   "kickoff": "2026-07-07T00:00:00Z",
-  "home": "TBD",
-  "away": "TBD",
+  "home": "United States",
+  "away": "Belgium",
   "api_id": 537380
  },
  {
