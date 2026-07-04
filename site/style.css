@@ -31,3 +31,24 @@ tr:last-child td { border-bottom: none; }
 .legend { display: flex; gap: .4rem; justify-content: center; margin-top: .7rem; }
 footer { text-align: center; color: var(--muted); font-size: .75rem; padding: 1rem; }
 .loading { text-align: center; color: var(--muted); }
+.submit-wrap { max-width: 560px; margin: 0 auto; }
+.submit-intro { color: var(--muted); font-size: .85rem; margin-bottom: 1rem; }
+.player-pick { display: block; color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 1rem; }
+select { background: var(--card); color: var(--ink); border: 1px solid #2a3d2f; border-radius: 8px; padding: .5rem .6rem; font-size: 1rem; }
+#who { width: 100%; margin-top: .35rem; }
+.games-list { display: flex; flex-direction: column; gap: .6rem; }
+.entry { background: var(--card); border-radius: 10px; padding: .7rem .9rem; }
+.entry-meta { color: var(--muted); font-size: .75rem; margin-bottom: .45rem; }
+.entry-row { display: flex; align-items: center; gap: .5rem; }
+.entry .team { flex: 1; font-weight: 600; }
+.entry .team.away { text-align: right; }
+.entry .goals { width: 3.2rem; text-align: center; }
+.entry .dash { color: var(--muted); }
+.entry.locked { opacity: .7; }
+.locked-tag { display: inline-block; margin-top: .5rem; font-size: .8rem; color: #51c878; }
+#send { width: 100%; margin-top: 1rem; background: var(--green); color: #fff; border: none; border-radius: 999px; padding: .7rem 1rem; font-size: 1rem; cursor: pointer; }
+#send:disabled { background: #2a3d2f; color: var(--muted); cursor: not-allowed; }
+.submit-msg { text-align: center; margin-top: .7rem; font-size: .85rem; color: var(--muted); min-height: 1.2em; }
+.submit-msg.ok { color: #51c878; }
+.submit-msg.err { color: #e06c5f; }
+.notice { background: var(--card); border-radius: 10px; padding: 1rem; color: var(--muted); text-align: center; }
