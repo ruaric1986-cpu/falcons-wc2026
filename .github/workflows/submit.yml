@@ -28,14 +28,15 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
-      - name: Merge submission and rebuild
+      - name: Merge submission
         id: merge
         env:
           PLAYER: ${{ inputs.player }}
           PICKS: ${{ inputs.picks }}
-        run: |
-          python -m scripts.submit_predictions
-          python -m scripts.build_leaderboard
+        # No leaderboard rebuild: submissions only ever add picks for matches that
+        # haven't kicked off, so they change no points or standings. Rebuilding here
+        # would just reset the leaderboard's movement arrows. The daily run owns that.
+        run: python -m scripts.submit_predictions
       - name: Commit
         run: |
           git config user.name "falcons-bot" && git config user.email "actions@github.com"
