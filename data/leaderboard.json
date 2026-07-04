@@ -1,32 +1,42 @@
 [
  {
   "player": "Jose",
-  "total": 90,
-  "exact": 16,
+  "total": 96,
+  "exact": 18,
   "result": 42,
   "group_pts": 69,
-  "knockout_pts": 21,
+  "knockout_pts": 27,
   "rank": 1,
   "movement": 0
  },
  {
-  "player": "Ruari",
-  "total": 82,
-  "exact": 13,
+  "player": "Chas",
+  "total": 85,
+  "exact": 14,
   "result": 43,
-  "group_pts": 66,
-  "knockout_pts": 16,
+  "group_pts": 60,
+  "knockout_pts": 25,
   "rank": 2,
-  "movement": 0
+  "movement": 1
  },
  {
-  "player": "Chas",
+  "player": "Ruari",
+  "total": 83,
+  "exact": 13,
+  "result": 44,
+  "group_pts": 66,
+  "knockout_pts": 17,
+  "rank": 3,
+  "movement": -1
+ },
+ {
+  "player": "Ryan",
   "total": 81,
   "exact": 13,
   "result": 42,
-  "group_pts": 60,
-  "knockout_pts": 21,
-  "rank": 3,
+  "group_pts": 65,
+  "knockout_pts": 16,
+  "rank": 4,
   "movement": 2
  },
  {
@@ -36,7 +46,7 @@
   "result": 43,
   "group_pts": 64,
   "knockout_pts": 15,
-  "rank": 4,
+  "rank": 5,
   "movement": -1
  },
  {
@@ -46,18 +56,18 @@
   "result": 42,
   "group_pts": 55,
   "knockout_pts": 23,
-  "rank": 5,
-  "movement": 1
+  "rank": 6,
+  "movement": -1
  },
  {
-  "player": "Ryan",
-  "total": 77,
-  "exact": 12,
-  "result": 41,
-  "group_pts": 65,
-  "knockout_pts": 12,
-  "rank": 6,
-  "movement": -2
+  "player": "Graham",
+  "total": 74,
+  "exact": 9,
+  "result": 47,
+  "group_pts": 56,
+  "knockout_pts": 18,
+  "rank": 7,
+  "movement": 2
  },
  {
   "player": "Carter",
@@ -66,8 +76,18 @@
   "result": 50,
   "group_pts": 59,
   "knockout_pts": 15,
-  "rank": 7,
-  "movement": 2
+  "rank": 8,
+  "movement": -1
+ },
+ {
+  "player": "Jim",
+  "total": 73,
+  "exact": 12,
+  "result": 37,
+  "group_pts": 59,
+  "knockout_pts": 14,
+  "rank": 9,
+  "movement": 1
  },
  {
   "player": "Alex F",
@@ -76,48 +96,48 @@
   "result": 43,
   "group_pts": 63,
   "knockout_pts": 10,
-  "rank": 8,
-  "movement": -1
- },
- {
-  "player": "Graham",
-  "total": 73,
-  "exact": 9,
-  "result": 46,
-  "group_pts": 56,
-  "knockout_pts": 17,
-  "rank": 9,
-  "movement": -1
- },
- {
-  "player": "Jim",
-  "total": 70,
-  "exact": 11,
-  "result": 37,
-  "group_pts": 59,
-  "knockout_pts": 11,
   "rank": 10,
-  "movement": 0
- },
- {
-  "player": "Ben F",
-  "total": 69,
-  "exact": 8,
-  "result": 45,
-  "group_pts": 49,
-  "knockout_pts": 20,
-  "rank": 11,
-  "movement": 4
+  "movement": -2
  },
  {
   "player": "Samuel",
-  "total": 68,
-  "exact": 12,
-  "result": 32,
+  "total": 72,
+  "exact": 13,
+  "result": 33,
   "group_pts": 56,
-  "knockout_pts": 12,
+  "knockout_pts": 16,
+  "rank": 11,
+  "movement": 1
+ },
+ {
+  "player": "Ben F",
+  "total": 70,
+  "exact": 8,
+  "result": 46,
+  "group_pts": 49,
+  "knockout_pts": 21,
   "rank": 12,
   "movement": -1
+ },
+ {
+  "player": "Paddy",
+  "total": 69,
+  "exact": 8,
+  "result": 45,
+  "group_pts": 54,
+  "knockout_pts": 15,
+  "rank": 13,
+  "movement": 1
+ },
+ {
+  "player": "Gazza",
+  "total": 68,
+  "exact": 9,
+  "result": 41,
+  "group_pts": 53,
+  "knockout_pts": 15,
+  "rank": 14,
+  "movement": 1
  },
  {
   "player": "Daisy",
@@ -126,46 +146,26 @@
   "result": 40,
   "group_pts": 54,
   "knockout_pts": 13,
-  "rank": 13,
-  "movement": -1
- },
- {
-  "player": "Paddy",
-  "total": 66,
-  "exact": 7,
-  "result": 45,
-  "group_pts": 54,
-  "knockout_pts": 12,
-  "rank": 14,
-  "movement": 0
- },
- {
-  "player": "Gazza",
-  "total": 65,
-  "exact": 8,
-  "result": 41,
-  "group_pts": 53,
-  "knockout_pts": 12,
   "rank": 15,
   "movement": -2
  },
  {
   "player": "Santino",
-  "total": 63,
+  "total": 64,
   "exact": 6,
-  "result": 45,
+  "result": 46,
   "group_pts": 50,
-  "knockout_pts": 13,
+  "knockout_pts": 14,
   "rank": 16,
   "movement": 0
  },
  {
   "player": "Sam H",
-  "total": 59,
+  "total": 60,
   "exact": 5,
-  "result": 44,
+  "result": 45,
   "group_pts": 54,
-  "knockout_pts": 5,
+  "knockout_pts": 6,
   "rank": 17,
   "movement": 0
  },
