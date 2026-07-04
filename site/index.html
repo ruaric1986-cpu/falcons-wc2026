@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Falcons · WC2026 Predictor</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
 <header>
@@ -19,6 +19,12 @@
 </header>
 <main id="content"><p class="loading">Loading…</p></main>
 <footer>Updated daily at 7:30am UK · exact score 3pts · correct result 1pt</footer>
-<script src="app.js"></script>
+<script>
+  // Load the app fresh every visit so a browser never runs a stale cached copy
+  // after an update (GitHub Pages caches assets for 10 min, phones longer).
+  var s = document.createElement("script");
+  s.src = "app.js?v=" + Date.now();
+  document.body.appendChild(s);
+</script>
 </body>
 </html>
