@@ -26,9 +26,11 @@ function ukTime(iso) {
 function renderLeaderboard() {
   const rows = state.leaderboard.map((r) => {
     const mv = r.movement > 0 ? `<span class="up">▲${r.movement}</span>` : r.movement < 0 ? `<span class="down">▼${-r.movement}</span>` : "·";
-    return `<tr><td>${r.rank}</td><td>${esc(r.player)}</td><td>${mv}</td><td>${r.exact}</td><td>${r.result}</td><td>${r.group_pts}</td><td>${r.knockout_pts}</td><td><strong>${r.total}</strong></td></tr>`;
+    const name = r.player === "Jose" ? `${esc(r.player)}<sup>*</sup>` : esc(r.player);
+    return `<tr><td>${r.rank}</td><td>${name}</td><td>${mv}</td><td>${r.exact}</td><td>${r.result}</td><td>${r.group_pts}</td><td>${r.knockout_pts}</td><td><strong>${r.total}</strong></td></tr>`;
   }).join("");
-  return `<table><tr><th>#</th><th>Player</th><th></th><th>Exact (3)</th><th>Result (1)</th><th>Group</th><th>KO</th><th>Total</th></tr>${rows}</table>`;
+  return `<table><tr><th>#</th><th>Player</th><th></th><th>Exact (3)</th><th>Result (1)</th><th>Group</th><th>KO</th><th>Total</th></tr>${rows}</table>` +
+    `<p class="footnote">*subject to review by The Court of Arbitration for Sports Betting</p>`;
 }
 
 function matchCard(fx) {
