@@ -1,6 +1,6 @@
 // Cloudflare Worker endpoint that saves submitted picks. Replace YOUR-SUBDOMAIN
 // with the subdomain from your `wrangler deploy` URL (e.g. falcons-morning-trigger.jsmith.workers.dev).
-const SUBMIT_ENDPOINT = "https://falcons-morning-trigger.YOUR-SUBDOMAIN.workers.dev/submit";
+const SUBMIT_ENDPOINT = "https://falcons-morning-trigger.ruaric1986.workers.dev/submit";
 
 const state = {};
 const $ = (s) => document.querySelector(s);
