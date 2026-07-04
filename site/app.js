@@ -1,3 +1,7 @@
+// Cloudflare Worker endpoint that saves submitted picks. Replace YOUR-SUBDOMAIN
+// with the subdomain from your `wrangler deploy` URL (e.g. falcons-morning-trigger.jsmith.workers.dev).
+const SUBMIT_ENDPOINT = "https://falcons-morning-trigger.YOUR-SUBDOMAIN.workers.dev/submit";
+
 const state = {};
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -86,9 +90,119 @@ function renderResults() {
   return `<div class="grid-wrap"><table class="grid">${head}${rows}${totalRow}</table></div>${legend}`;
 }
 
+// Knockout fixtures that are open for entry: drawn (no TBD) and not yet kicked off.
+function openKnockouts() {
+  return state.fixtures
+    .filter((f) => f.stage !== "GROUP" && f.home !== "TBD" && f.away !== "TBD" && f.kickoff && String(f.kickoff).includes("T") && !kicked(f))
+    .sort((a, b) => a.number - b.number);
+}
+
+function scoreSelect(name) {
+  const opts = ['<option value="">–</option>'].concat([...Array(10).keys()].map((n) => `<option value="${n}">${n}</option>`)).join("");
+  return `<select class="goals" data-side="${name}">${opts}</select>`;
+}
+
+function renderSubmit() {
+  if (SUBMIT_ENDPOINT.includes("YOUR-SUBDOMAIN"))
+    return `<div class="notice">Score entry isn't wired up yet — the site owner needs to set the Cloudflare Worker address in <code>app.js</code>.</div>`;
+  const open = openKnockouts();
+  const playerOpts = ['<option value="">— choose your name —</option>'].concat(state.players.map((p) => `<option value="${esc(p)}">${esc(p)}</option>`)).join("");
+  const games = open.length
+    ? open.map((f) => {
+        const mid = String(f.number);
+        return `<div class="entry" data-mid="${mid}"><div class="entry-meta">${esc(f.stage)} · ${ukTime(f.kickoff)}</div>
+          <div class="entry-row"><span class="team home">${esc(f.home)}</span>${scoreSelect("home")}<span class="dash">–</span>${scoreSelect("away")}<span class="team away">${esc(f.away)}</span></div></div>`;
+      }).join("")
+    : `<p class="loading">No knockout games are open for entry right now.</p>`;
+  return `<div class="submit-wrap">
+    <p class="submit-intro">Pick your name, then enter a score for each game. Once you submit a game it's locked — you can't change it, so double-check before sending.</p>
+    <label class="player-pick">Your name<br><select id="who">${playerOpts}</select></label>
+    <div id="games" class="games-list" hidden>${games}</div>
+    <div id="submit-area" hidden><button id="send" disabled>Submit my scores</button><p id="submit-msg" class="submit-msg"></p></div>
+  </div>`;
+}
+
+function wireSubmit() {
+  const who = $("#who"), gamesBox = $("#games"), area = $("#submit-area"), send = $("#send"), msg = $("#submit-msg");
+  if (!who) return;
+
+  function paint() {
+    const player = who.value;
+    gamesBox.hidden = area.hidden = !player;
+    if (!player) return;
+    let open = 0;
+    gamesBox.querySelectorAll(".entry").forEach((el) => {
+      const mid = el.dataset.mid;
+      const existing = (state.predictions[mid] || {})[player];
+      const row = el.querySelector(".entry-row");
+      const oldTag = el.querySelector(".locked-tag");
+      if (oldTag) oldTag.remove();
+      if (existing) {
+        el.classList.add("locked");
+        row.querySelectorAll("select").forEach((s) => { s.disabled = true; s.value = ""; });
+        const [h, a] = existing.split("-");
+        const tag = document.createElement("span");
+        tag.className = "locked-tag";
+        tag.textContent = `submitted: ${h}–${a} ✓`;
+        el.appendChild(tag);
+      } else {
+        el.classList.remove("locked");
+        row.querySelectorAll("select").forEach((s) => (s.disabled = false));
+        open++;
+      }
+    });
+    refresh();
+  }
+
+  function collect() {
+    const picks = {};
+    gamesBox.querySelectorAll(".entry:not(.locked)").forEach((el) => {
+      const h = el.querySelector('[data-side="home"]').value, a = el.querySelector('[data-side="away"]').value;
+      if (h !== "" && a !== "") picks[el.dataset.mid] = `${h}-${a}`;
+    });
+    return picks;
+  }
+
+  function refresh() {
+    const openCount = gamesBox.querySelectorAll(".entry:not(.locked)").length;
+    const filled = Object.keys(collect()).length;
+    send.disabled = openCount === 0 || filled !== openCount;
+    if (openCount === 0) { msg.textContent = "You've submitted all the open games. 🎉"; msg.className = "submit-msg ok"; }
+    else if (!send.disabled) { msg.textContent = ""; }
+    else { msg.textContent = `Enter a score for all ${openCount} game${openCount === 1 ? "" : "s"} to submit (${filled}/${openCount} done).`; msg.className = "submit-msg"; }
+  }
+
+  who.addEventListener("change", paint);
+  gamesBox.addEventListener("change", (e) => { if (e.target.classList.contains("goals")) refresh(); });
+  send.addEventListener("click", async () => {
+    const player = who.value, picks = collect();
+    if (!player || !Object.keys(picks).length) return;
+    send.disabled = true; msg.className = "submit-msg"; msg.textContent = "Sending…";
+    try {
+      const r = await fetch(SUBMIT_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ player, picks }) });
+      const data = await r.json().catch(() => ({}));
+      if (r.ok && data.ok) {
+        msg.className = "submit-msg ok";
+        msg.textContent = "Locked in! ✅ Your scores are saved — they'll show on the site in a minute or two.";
+        who.disabled = true;
+        gamesBox.querySelectorAll("select").forEach((s) => (s.disabled = true));
+      } else {
+        msg.className = "submit-msg err";
+        msg.textContent = `Couldn't save (${data.error || r.status}). Please try again or send your scores to Ruari.`;
+        send.disabled = false;
+      }
+    } catch {
+      msg.className = "submit-msg err";
+      msg.textContent = "Network error — please try again, or send your scores to Ruari.";
+      send.disabled = false;
+    }
+  });
+}
+
 function render(tab) {
   document.querySelectorAll("nav button").forEach((b) => b.classList.toggle("active", b.dataset.tab === tab));
-  $("#content").innerHTML = { leaderboard: renderLeaderboard, matches: renderMatches, results: renderResults, knockouts: renderKnockouts }[tab]();
+  $("#content").innerHTML = { leaderboard: renderLeaderboard, matches: renderMatches, results: renderResults, knockouts: renderKnockouts, submit: renderSubmit }[tab]();
+  if (tab === "submit") wireSubmit();
 }
 
 document.querySelector("nav").addEventListener("click", (e) => e.target.dataset.tab && render(e.target.dataset.tab));

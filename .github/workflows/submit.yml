@@ -1,0 +1,58 @@
+name: Submit predictions
+# Fired by the Cloudflare Worker when a player submits knockout scores on the
+# site. Validates + merges the picks, rebuilds the leaderboard, commits, and
+# redeploys the site so the new picks (and their lock) show up.
+on:
+  workflow_dispatch:
+    inputs:
+      player:
+        description: "Player name (must match data/players.json)"
+        required: true
+      picks:
+        description: 'JSON object of match-number -> "H-A", e.g. {"89":"2-1"}'
+        required: true
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: daily          # share with the daily update so they never commit at once
+  cancel-in-progress: false
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Merge submission and rebuild
+        id: merge
+        env:
+          PLAYER: ${{ inputs.player }}
+          PICKS: ${{ inputs.picks }}
+        run: |
+          python -m scripts.submit_predictions
+          python -m scripts.build_leaderboard
+      - name: Commit
+        run: |
+          git config user.name "falcons-bot" && git config user.email "actions@github.com"
+          git add data && git diff --cached --quiet || { git commit -m "predictions: site submission (${{ inputs.player }})" && git push; }
+      - name: Build site artifact
+        run: |
+          git pull --rebase || true
+          mkdir -p _site && cp site/* _site/ && cp -r data _site/data
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: _site }
+
+  deploy:
+    needs: submit
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
