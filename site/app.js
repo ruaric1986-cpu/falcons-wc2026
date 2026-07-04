@@ -58,8 +58,11 @@ function renderMatches() {
 }
 
 function renderKnockouts() {
-  const fx = state.fixtures.filter((f) => f.stage !== "GROUP").sort((a, b) => a.number - b.number);
-  return fx.map(matchCard).join("") || "<p class='loading'>Knockout draw not made yet</p>";
+  // Hide completed games (those with a result) — they live on the Results tab.
+  const fx = state.fixtures
+    .filter((f) => f.stage !== "GROUP" && !state.results[String(f.number)])
+    .sort((a, b) => a.number - b.number);
+  return fx.map(matchCard).join("") || "<p class='loading'>No upcoming knockout games</p>";
 }
 
 function renderResults() {
