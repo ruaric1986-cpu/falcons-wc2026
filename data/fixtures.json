@@ -822,7 +822,7 @@
   "number": 92,
   "stage": "R16",
   "group": null,
-  "kickoff": "2026-07-06T00:00:00Z",
+  "kickoff": "2026-07-06T01:00:00Z",
   "home": "Mexico",
   "away": "England",
   "api_id": 537378
@@ -886,8 +886,8 @@
   "stage": "QF",
   "group": null,
   "kickoff": "2026-07-11T21:00:00Z",
-  "home": "TBD",
-  "away": "TBD",
+  "home": "Norway",
+  "away": "England",
   "api_id": 537385
  },
  {
