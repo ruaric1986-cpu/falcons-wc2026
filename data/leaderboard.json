@@ -117,7 +117,7 @@
   "group_pts": 49,
   "knockout_pts": 26,
   "rank": 12,
-  "movement": 1
+  "movement": 0
  },
  {
   "player": "Paddy",
@@ -127,7 +127,7 @@
   "group_pts": 54,
   "knockout_pts": 21,
   "rank": 13,
-  "movement": -1
+  "movement": 0
  },
  {
   "player": "Gazza",
@@ -147,7 +147,7 @@
   "group_pts": 50,
   "knockout_pts": 19,
   "rank": 15,
-  "movement": 1
+  "movement": 0
  },
  {
   "player": "Daisy",
@@ -157,7 +157,7 @@
   "group_pts": 54,
   "knockout_pts": 14,
   "rank": 16,
-  "movement": -1
+  "movement": 0
  },
  {
   "player": "Sam H",
