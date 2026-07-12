@@ -27,7 +27,7 @@
   "group_pts": 65,
   "knockout_pts": 25,
   "rank": 3,
-  "movement": 1
+  "movement": 0
  },
  {
   "player": "Ruari",
@@ -37,7 +37,7 @@
   "group_pts": 66,
   "knockout_pts": 24,
   "rank": 4,
-  "movement": -1
+  "movement": 0
  },
  {
   "player": "Dave F",
@@ -91,11 +91,11 @@
  },
  {
   "player": "Samuel",
-  "total": 78,
+  "total": 79,
   "exact": 13,
-  "result": 39,
+  "result": 40,
   "group_pts": 56,
-  "knockout_pts": 22,
+  "knockout_pts": 23,
   "rank": 10,
   "movement": 0
  },
@@ -147,7 +147,7 @@
   "group_pts": 54,
   "knockout_pts": 18,
   "rank": 15,
-  "movement": 1
+  "movement": 0
  },
  {
   "player": "Santino",
@@ -157,15 +157,15 @@
   "group_pts": 50,
   "knockout_pts": 21,
   "rank": 16,
-  "movement": -1
+  "movement": 0
  },
  {
   "player": "Sam H",
-  "total": 68,
+  "total": 69,
   "exact": 5,
-  "result": 53,
+  "result": 54,
   "group_pts": 54,
-  "knockout_pts": 14,
+  "knockout_pts": 15,
   "rank": 17,
   "movement": 0
  },
