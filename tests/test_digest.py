@@ -130,3 +130,25 @@ def test_real_send_records_last_sent(tmp_path, monkeypatch):
     today = datetime.datetime.now(ZoneInfo("Europe/London")).date().isoformat()
     assert state["reported"] == ["1"]      # result recorded
     assert state["last_sent"] == today     # morning-send marker the gate uses
+
+def test_digest_lang_is_date_driven():
+    assert digest.digest_lang("2026-07-15") == "es"   # England v Argentina SF
+    assert digest.digest_lang("2026-07-14") == "en"
+    assert digest.digest_lang("2026-07-16") == "en"
+
+def test_compose_spanish_on_that_day():
+    msg = compose(fixtures=FIXTURES, results={"1": {"home": 2, "away": 1}},
+                  points={"1": {"Ruari": 3, "Dave F": 1}}, leaderboard=LB,
+                  reported=[], today="2026-06-12", lang="es")
+    assert "Actualización Matutina" in msg      # Spanish title
+    assert "*Resultados:*" in msg and "*Clasificación:*" in msg
+    assert "Exactos:" in msg                     # exact-score label
+    assert "Czechia vs South Korea" in msg       # 'vs' not 'v'
+    assert "Tabla completa:" in msg
+    assert "Morning Update" not in msg and "Full table" not in msg
+
+def test_english_unchanged_by_default():
+    msg = compose(fixtures=FIXTURES, results={"1": {"home": 2, "away": 1}},
+                  points={"1": {"Ruari": 3}}, leaderboard=LB, reported=[], today="2026-06-12")
+    assert "Morning Update" in msg and "Full table" in msg
+    assert "Czechia v South Korea" in msg
