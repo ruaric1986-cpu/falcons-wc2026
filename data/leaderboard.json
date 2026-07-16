@@ -50,14 +50,24 @@
   "movement": 0
  },
  {
+  "player": "Graham",
+  "total": 87,
+  "exact": 12,
+  "result": 51,
+  "group_pts": 56,
+  "knockout_pts": 31,
+  "rank": 6,
+  "movement": 2
+ },
+ {
   "player": "Alex F",
   "total": 85,
   "exact": 12,
   "result": 49,
   "group_pts": 63,
   "knockout_pts": 22,
-  "rank": 6,
-  "movement": 0
+  "rank": 7,
+  "movement": -1
  },
  {
   "player": "Seif",
@@ -66,18 +76,8 @@
   "result": 48,
   "group_pts": 55,
   "knockout_pts": 29,
-  "rank": 7,
-  "movement": 0
- },
- {
-  "player": "Graham",
-  "total": 84,
-  "exact": 11,
-  "result": 51,
-  "group_pts": 56,
-  "knockout_pts": 28,
   "rank": 8,
-  "movement": 0
+  "movement": -1
  },
  {
   "player": "Carter",
