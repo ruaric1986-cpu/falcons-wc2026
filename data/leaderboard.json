@@ -20,32 +20,32 @@
   "movement": 0
  },
  {
+  "player": "Ruari",
+  "total": 91,
+  "exact": 13,
+  "result": 52,
+  "group_pts": 66,
+  "knockout_pts": 25,
+  "rank": 3,
+  "movement": 1
+ },
+ {
   "player": "Ryan",
   "total": 90,
   "exact": 14,
   "result": 48,
   "group_pts": 65,
   "knockout_pts": 25,
-  "rank": 3,
-  "movement": 0
- },
- {
-  "player": "Ruari",
-  "total": 90,
-  "exact": 13,
-  "result": 51,
-  "group_pts": 66,
-  "knockout_pts": 24,
   "rank": 4,
-  "movement": 0
+  "movement": -1
  },
  {
   "player": "Dave F",
-  "total": 87,
+  "total": 88,
   "exact": 13,
-  "result": 48,
+  "result": 49,
   "group_pts": 64,
-  "knockout_pts": 23,
+  "knockout_pts": 24,
   "rank": 5,
   "movement": 0
  },
@@ -81,11 +81,11 @@
  },
  {
   "player": "Carter",
-  "total": 81,
+  "total": 82,
   "exact": 8,
-  "result": 57,
+  "result": 58,
   "group_pts": 59,
-  "knockout_pts": 22,
+  "knockout_pts": 23,
   "rank": 9,
   "movement": 0
  },
